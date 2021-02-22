@@ -7,8 +7,9 @@
 
 import UIKit
 
-class ToDoTableViewController: UITableViewController {
-    
+class ToDoTableViewController: UITableViewController, AddEditDelegate {
+   
+
     var cellId = "toDoItemCell"
     var sections: [String] = ["High Priority", "Medium Priority", "Low Priority"]
     
@@ -17,13 +18,11 @@ class ToDoTableViewController: UITableViewController {
     
     var fetchedToDoItems = [ManagedToDoItem]()
     
-
     override func viewDidLoad() {
         super.viewDidLoad()
         navigationController?.navigationBar.prefersLargeTitles = true
         title = "ToDo Items"
         getAllItems()
-        
         // register custom TableViewCell
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
@@ -32,21 +31,18 @@ class ToDoTableViewController: UITableViewController {
     
     @objc
     func addTapped(){
-        let alert = UIAlertController(title: "New Item",
-                                      message: "Enter new item",
-                                      preferredStyle: .alert)
-        alert.addTextField(configurationHandler: nil)
-        alert.addAction(UIAlertAction(title: "Submit",
-                                      style: .cancel,
-                                      handler: { [weak self] _ in
-            guard let field = alert.textFields?.first, let text = field.text, !text.isEmpty else {
-                return
-            }
-            self?.createItem(title: text, priorityLevel: 1, isCompletedIndicator: false)
-        }))
-        present(alert, animated: true, completion: nil)
+        let AddEditTVC = AddEditTableViewController()
+        AddEditTVC.delegate = self
+        let addEditNC = UINavigationController(rootViewController: AddEditTVC)
+        present(addEditNC, animated: true, completion: nil)
     }
     
+    /// delegate method
+    
+    func add(_ title: String, _ priority: Int16) {
+        print("delegate")
+        createItem(title: title, priorityLevel: priority, isCompletedIndicator: false)
+    }
    
     // MARK: - Table view data source
 
@@ -55,15 +51,16 @@ class ToDoTableViewController: UITableViewController {
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let highPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 1}
+        let mediumPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 2}
+        let lowPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 3}
+        
         switch section {
         case 0:
-            let highPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 1}
             return highPriorityItems.count
         case 1:
-            let mediumPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 2}
             return mediumPriorityItems.count
         case 2:
-            let lowPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 3}
             return lowPriorityItems.count
         default:
             return 0
@@ -149,6 +146,8 @@ class ToDoTableViewController: UITableViewController {
     }
 }
 
+
+/// CoreData manager
 extension ToDoTableViewController {
 
     /// get all the ToDoItem from the database
@@ -169,7 +168,6 @@ extension ToDoTableViewController {
     func createItem(title: String, priorityLevel: Int16, isCompletedIndicator: Bool) {
         let newItem = ManagedToDoItem(context: context)
         newItem.title = title
-        guard priorityLevel == 1 || priorityLevel == 2 || priorityLevel == 3  else {return}
         newItem.priorityLevel = priorityLevel
         newItem.isCompletedIndicator = isCompletedIndicator
         do {
@@ -209,11 +207,9 @@ extension ToDoTableViewController {
 
 extension ToDoTableViewController {
     func generateDummyData() {
-        
         createItem(title: "Take a walk", priorityLevel: 1, isCompletedIndicator: false)
         createItem(title: "Study Design pattern", priorityLevel: 1, isCompletedIndicator: false)
         createItem(title: "Study iOS", priorityLevel: 1, isCompletedIndicator: false)
-  
     }
     
     func resetData() {

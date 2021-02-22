@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE50FA1A25E38CA200C9FB9D /* AddEditTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50FA1925E38CA200C9FB9D /* AddEditTableViewController.swift */; };
+		AE50FA2025E38DD500C9FB9D /* UIView+ConstraintLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE50FA1F25E38DD500C9FB9D /* UIView+ConstraintLayout.swift */; };
 		AE7A66F125E3139200864F40 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7A66F025E3139200864F40 /* AppDelegate.swift */; };
 		AE7A66F325E3139200864F40 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7A66F225E3139200864F40 /* SceneDelegate.swift */; };
 		AE7A66F825E3139200864F40 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AE7A66F625E3139200864F40 /* Main.storyboard */; };
@@ -19,6 +21,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		AE50FA1925E38CA200C9FB9D /* AddEditTableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddEditTableViewController.swift; sourceTree = "<group>"; };
+		AE50FA1F25E38DD500C9FB9D /* UIView+ConstraintLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+ConstraintLayout.swift"; sourceTree = "<group>"; };
 		AE7A66ED25E3139200864F40 /* CoreData_ToDo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = CoreData_ToDo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE7A66F025E3139200864F40 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		AE7A66F225E3139200864F40 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -43,6 +47,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE4A39C025E4488D00121A93 /* TableViewController */ = {
+			isa = PBXGroup;
+			children = (
+				AE7A670E25E3146500864F40 /* ToDoTableViewController.swift */,
+				AE50FA1925E38CA200C9FB9D /* AddEditTableViewController.swift */,
+			);
+			path = TableViewController;
+			sourceTree = "<group>";
+		};
+		AE50FA2225E38DD900C9FB9D /* Utils */ = {
+			isa = PBXGroup;
+			children = (
+				AE50FA1F25E38DD500C9FB9D /* UIView+ConstraintLayout.swift */,
+			);
+			path = Utils;
+			sourceTree = "<group>";
+		};
 		AE7A66E425E3139200864F40 = {
 			isa = PBXGroup;
 			children = (
@@ -62,9 +83,10 @@
 		AE7A66EF25E3139200864F40 /* CoreData_ToDo */ = {
 			isa = PBXGroup;
 			children = (
+				AE50FA2225E38DD900C9FB9D /* Utils */,
 				AE7A66F025E3139200864F40 /* AppDelegate.swift */,
 				AE7A66F225E3139200864F40 /* SceneDelegate.swift */,
-				AE7A670E25E3146500864F40 /* ToDoTableViewController.swift */,
+				AE4A39C025E4488D00121A93 /* TableViewController */,
 				AE7A670D25E3143500864F40 /* Model */,
 				AE7A66F625E3139200864F40 /* Main.storyboard */,
 				AE7A66FC25E3139A00864F40 /* Assets.xcassets */,
@@ -159,6 +181,8 @@
 				AE7A670B25E3141E00864F40 /* ManagedToDoItem+CoreDataProperties.swift in Sources */,
 				AE7A670A25E3141E00864F40 /* ManagedToDoItem+CoreDataClass.swift in Sources */,
 				AE7A66FB25E3139200864F40 /* CoreData_ToDo.xcdatamodeld in Sources */,
+				AE50FA1A25E38CA200C9FB9D /* AddEditTableViewController.swift in Sources */,
+				AE50FA2025E38DD500C9FB9D /* UIView+ConstraintLayout.swift in Sources */,
 				AE7A66F325E3139200864F40 /* SceneDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
