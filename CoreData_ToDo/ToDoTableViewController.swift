@@ -10,6 +10,7 @@ import UIKit
 class ToDoTableViewController: UITableViewController {
     
     var cellId = "toDoItemCell"
+    var sections: [String] = ["High Priority", "Medium Priority", "Low Priority"]
     
     ///perform objects in coreData database
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
@@ -25,9 +26,7 @@ class ToDoTableViewController: UITableViewController {
         
         // register custom TableViewCell
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellId)
-        
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addTapped))
-
     }
 
     
@@ -37,7 +36,9 @@ class ToDoTableViewController: UITableViewController {
                                       message: "Enter new item",
                                       preferredStyle: .alert)
         alert.addTextField(configurationHandler: nil)
-        alert.addAction(UIAlertAction(title: "Submit", style: .cancel, handler: { [weak self] _ in
+        alert.addAction(UIAlertAction(title: "Submit",
+                                      style: .cancel,
+                                      handler: { [weak self] _ in
             guard let field = alert.textFields?.first, let text = field.text, !text.isEmpty else {
                 return
             }
@@ -45,26 +46,59 @@ class ToDoTableViewController: UITableViewController {
         }))
         present(alert, animated: true, completion: nil)
     }
-
     
+   
     // MARK: - Table view data source
 
     override func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return sections.count
     }
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return fetchedToDoItems.count
+        switch section {
+        case 0:
+            let highPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 1}
+            return highPriorityItems.count
+        case 1:
+            let mediumPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 2}
+            return mediumPriorityItems.count
+        case 2:
+            let lowPriorityItems = fetchedToDoItems.filter{$0.priorityLevel == 3}
+            return lowPriorityItems.count
+        default:
+            return 0
+        }
     }
 
+    override func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sections[section]
+    }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let toDoItem = fetchedToDoItems[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
-        
-        cell.textLabel?.text = toDoItem.title
-        return cell
+        switch indexPath.section {
+        case 0:
+            if toDoItem.priorityLevel == 1 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+                cell.textLabel?.text = toDoItem.title
+                return cell
+            }
+        case 1:
+            if toDoItem.priorityLevel == 2 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+                cell.textLabel?.text = toDoItem.title
+                return cell
+            }
+        case 2:
+            if toDoItem.priorityLevel == 3 {
+                let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath)
+                cell.textLabel?.text = toDoItem.title
+                return cell
+            }
+        default:
+            return UITableViewCell()
+        }
+        return UITableViewCell()
     }
 
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -74,14 +108,16 @@ class ToDoTableViewController: UITableViewController {
         let sheet = UIAlertController(title: "Edit item",
                                       message: nil,
                                       preferredStyle: .actionSheet)
-        
-//        sheet.addTextField(configurationHandler: nil)
-        
+    
         /// cancel
-        sheet.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
+        sheet.addAction(UIAlertAction(title: "Cancel",
+                                      style: .cancel,
+                                      handler: nil))
         
         /// edit
-        sheet.addAction(UIAlertAction(title: "Edit", style: .default, handler: { _ in
+        sheet.addAction(UIAlertAction(title: "Edit",
+                                      style: .default,
+                                      handler: { _ in
             
             let alert = UIAlertController(title: "Edit",
                                           message: "Edit item",
@@ -89,7 +125,9 @@ class ToDoTableViewController: UITableViewController {
             alert.addTextField(configurationHandler: nil)
             alert.textFields?.first?.text = item.title
 
-            alert.addAction(UIAlertAction(title: "Save", style: .cancel, handler: { [weak self] _ in
+            alert.addAction(UIAlertAction(title: "Save",
+                                          style: .cancel,
+                                          handler: { [weak self] _ in
 
                 guard let field = alert.textFields?.first, let newTitle = field.text, !newTitle.isEmpty else {
                     return
@@ -101,59 +139,14 @@ class ToDoTableViewController: UITableViewController {
         }))
         
         /// delete
-        sheet.addAction(UIAlertAction(title: "Delete", style: .destructive, handler: { [weak self] _ in
+        sheet.addAction(UIAlertAction(title: "Delete",
+                                      style: .destructive,
+                                      handler: { [weak self] _ in
             self?.deleteItem(item: item)
         }))
         
         present(sheet, animated: true, completion: nil)
     }
-    
-
-    /*
-    // Override to support conditional editing of the table view.
-    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the specified item to be editable.
-        return true
-    }
-    */
-
-    /*
-    // Override to support editing the table view.
-    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            // Delete the row from the data source
-            tableView.deleteRows(at: [indexPath], with: .fade)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-        }    
-    }
-    */
-
-    /*
-    // Override to support rearranging the table view.
-    override func tableView(_ tableView: UITableView, moveRowAt fromIndexPath: IndexPath, to: IndexPath) {
-
-    }
-    */
-
-    /*
-    // Override to support conditional rearranging of the table view.
-    override func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
-        // Return false if you do not want the item to be re-orderable.
-        return true
-    }
-    */
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
-    }
-    */
-
 }
 
 extension ToDoTableViewController {
@@ -162,7 +155,7 @@ extension ToDoTableViewController {
     func getAllItems(){
         do {
             fetchedToDoItems = try context.fetch(ManagedToDoItem.fetchRequest())
-
+            
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
